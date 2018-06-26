@@ -14,7 +14,7 @@
 
 #### Running it
 Launch with
-`npm start`
+`node app`
 
 
 Runs on localhost port 8000
