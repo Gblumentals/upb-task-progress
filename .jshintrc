@@ -1,0 +1,14 @@
+{
+  "curly": false,
+  "forin": false,
+  "sub": true,
+  "asi": true,
+  "multistr": true,
+  "plusplus": false,
+  "laxcomma": true,
+  "noyield": false,
+  "eqnull": false,
+  "esnext": true,
+  "node": true,
+  "mocha": true
+}

@@ -1,0 +1,22 @@
+{
+  "name": "upb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "^1.7.2",
+    "angular-animate": "^1.7.2",
+    "angular-aria": "^1.7.2",
+    "angular-material": "^1.1.9",
+    "angular-messages": "^1.7.2",
+    "config": "^1.30.0",
+    "dotenv": "^6.0.0",
+    "hapi": "^17.5.2",
+    "inert": "^5.1.0"
+  }
+}

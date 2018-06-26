@@ -1,0 +1,184 @@
+<!doctype html>
+<html ng-app="App" ng-controller="ctrl as $ctrl">
+<head>
+  <link rel="stylesheet" href="css/angular-material.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/index.css">
+  <script src="js/libs/angular.min.js"> </script>
+  <script src="js/libs/angular-animate.min.js"> </script>
+  <script src="js/libs/angular-aria.min.js"> </script>
+  <script src="js/libs/angular-messages.min.js"> </script>
+  <script src="js/libs/angular-material.min.js"> </script>
+
+  <script type="text/javascript">
+    var app = angular.module('App', ['ngMaterial', 'ngMessages'])
+
+    app.controller('ctrl', function($scope) {
+      $scope.totalWeight = 0
+      $scope.totalWeightedComplete = 0
+
+      $scope.inEditMode = false
+
+      $scope.newTask = {
+        task: '',
+        weight: 1,
+        size: 1,
+        complete: 0
+      }
+
+      // $scope.newTask = ''
+      // $scope.newTaskWeight = 0
+      // $scope.newTaskAmountDone = 0
+      // $scope.newTaskSize = 0
+
+      $scope.taskBoard = [
+        { task: 'Expand sales volume', weight: 80, size: 60, complete: 53, perc_complete: 0, weighted_complete: 0 },
+        { task: 'Expand clientel', weight: 15, size: 5, complete: 4, perc_complete: 0, weighted_complete: 0 },
+        { task: 'Submit tax forms till the 7th of every month', weight: 5, size: 1, complete: 0, perc_complete: 0, weighted_complete: 0 }
+      ]
+
+
+      $scope.saveTask = function () {
+        var newTask = {
+          task: $scope.newTask.task,
+          weight: $scope.newTask.weight,
+          size: $scope.newTask.size,
+          complete: $scope.newTask.complete,
+          perc_complete: round(parseFloat(($scope.newTask.complete / $scope.newTask.size * 100).toFixed(2))),
+          weighted_complete: round(parseFloat(($scope.newTask.complete / $scope.newTask.size * 100 * $scope.newTask.weight / 100).toFixed(2)), 2)
+        }
+
+        if ($scope.newTask.weight > 0 && $scope.newTask.size > 0 && $scope.newTask.complete > 0) {
+          $scope.taskBoard.push(newTask)
+
+          $scope.newTask.task = ''
+          $scope.newTask.weight = 0
+          $scope.newTask.size = 0
+          $scope.newTask.complete = 0
+
+
+          $scope.toggleEditMode()
+          $scope.calculate()
+        }
+      }
+
+
+      $scope.toggleEditMode = function () {
+        $scope.inEditMode = !$scope.inEditMode
+      }
+
+
+      $scope.calculate = function () {
+
+        $scope.totalWeight = 0
+        $scope.totalWeightedComplete = 0
+
+        $scope.taskBoard.forEach(task => {
+          task.perc_complete = round(parseFloat((task.complete / task.size * 100).toFixed(2)), 2);
+          task.weighted_complete = round(parseFloat((task.complete / task.size * 100 * task.weight / 100).toFixed(2)), 2);
+
+          // include task in totals
+          $scope.totalWeight += task.weight
+          $scope.totalWeightedComplete += task.weighted_complete
+        })
+      }
+
+      $scope.calculate()
+
+
+    })
+
+
+    let round = (numb, decimal) => {
+      let precision = Math.pow(10, decimal)
+      return Math.ceil(numb * precision) / precision
+    }
+
+  </script>
+</head>
+<body>
+
+  <md-content layout-padding>
+
+    <table class="table table-bordered progressTable">
+      <thead>
+        <tr>
+          <th> Mērķis </th>
+          <th> Mērķa īpatsvars &#37; </th>
+          <th> Mērķa lielums </th>
+          <th> Mērķa faktiskā izpilde </th>
+          <th> Mērķa izpilde &#37; </th>
+          <th> Mērķa izpilde &#37;, <br> ievērojot mērķa īpatsvaru </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="task in taskBoard">
+          <td> {{ task.task }} </td>
+          <td> {{ task.weight }} </td>
+          <td> {{ task.size }} </td>
+          <td> {{ task.complete }} </td>
+          <td> {{ task.perc_complete }} </td>
+          <td> {{ task.weighted_complete }} </td>
+        </tr>
+
+        <tr ng-if="inEditMode">
+          <td>
+            <md-input-container class="md-block">
+              <input type="text" placeholder="Mērķis" ng-model="newTask.task"/>
+            </md-input-container>
+          </td>
+
+          <td>
+            <md-input-container class="md-block">
+              <input  type="number" step="any" ng-min="1"
+                max="100" placeholder="Mērķa īpatsvars %" name="new_weight" ng-model="newTask.weight"/>
+                <div ng-messages="new_weight.$error"  role="alert">
+
+                  <div ng-message="min">
+                    You should charge at least $800 an hour. This job is a big deal... if you mess up,
+                    everyone dies!
+                  </div>
+
+
+                </div>
+            </md-input-container>
+          </td>
+
+          <td>
+            <md-input-container class="md-block">
+              <input  type="number" step="any"  min="1"
+                max="100"  placeholder="Mērķa lielums" ng-model="newTask.size"/>
+            </md-input-container>
+          </td>
+          <td>
+            <md-input-container class="md-block">
+              <input  type="number" step="any" min="0"
+                max="100"  placeholder="Mērķa faktiskā izpilde" ng-model="newTask.complete"/>
+            </md-input-container>
+          </td>
+          <td> </td>
+          <td> </td>
+        </tr>
+
+        <tr>
+          <td>
+            <button type="button" ng-if="inEditMode" ng-click="saveTask()">Save</button>
+            <button type="button" ng-if="!inEditMode" ng-click="toggleEditMode()">Add</button>
+          </td>
+          <td>
+            <span> {{ totalWeight }} </span>
+          </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>
+            <span> {{ totalWeightedComplete }} </span>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </md-content>
+
+</body>
+</html>

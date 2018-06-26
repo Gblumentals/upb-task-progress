@@ -1,0 +1,6 @@
+
+
+.progressTable td, .progressTable th {
+  vertical-align: middle !important;
+  text-align: center;
+}
